@@ -4,6 +4,7 @@
             <header class=" ">
                 <h2 class="text-2xl t-white-0">Welcome to derustPy!</h2>
                 <p class="t-white-0 text-lg">Let's learn from your mistakes.</p>
+                <p>TODO: Retrieve and render markdown here</p>
             </header>
         </section>
         <section class="">
