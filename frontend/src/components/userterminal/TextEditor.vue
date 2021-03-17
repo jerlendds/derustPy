@@ -1,6 +1,6 @@
 <template>
     <section class="w-full h-full flex pt-14 bg-navy">
-        <line-numbers />
+        <!-- <line-numbers /> -->
         <!-- Editor contained in grid to overlap source textarea -->
         <div class="w-full h-full grid items-start justify-items-start bg-navy">
             <textarea
@@ -26,33 +26,61 @@
 </template>
 
 <script>
-import hljs from "@/assets/highlight.pack.js";
-
-import LineNumbers from "@/components/userterminal/LineNumbers.vue";
+import filbert from "filbert";
+import hljs from "@/assets/js/highlight.pack.js";
+// TODO: Pass current number of lines occupied into linenumbers and bind scroll position of editor
+// import LineNumbers from "@/components/userterminal/LineNumbers.vue";
 import EditorWidgets from "@/components/userterminal/EditorWidgets.vue";
 
 export default {
     name: "TextEditor",
     components: {
-        lineNumbers: LineNumbers,
+        // lineNumbers: LineNumbers,
         widgets: EditorWidgets,
     },
     data() {
         return {
             cursorPosition: 0,
-            editorText:
-                "print('Hello world! Welcome to my humble and incomplete editor')",
+            editorText: 'print("hello world")',
             history: [],
+            x: `def extract_refexpr_names(expr: RefExpr) -> Set[str]:
+    """Recursively extracts all module references from a reference expression.
+    Note that currently, the only two subclasses of RefExpr are NameExpr and
+    MemberExpr."""
+    output = set()  # type: Set[str]
+    while isinstance(expr.node, MypyFile) or expr.fullname is not None:
+        if isinstance(expr.node, MypyFile) and expr.fullname is not None:
+            # If it's None, something's wrong (perhaps due to an
+            # import cycle or a suppressed error).  For now we just
+            # skip it.
+            output.add(expr.fullname)
+
+        if isinstance(expr, NameExpr):
+            is_suppressed_import = isinstance(expr.node, Var) and expr.node.is_suppressed_import
+            if isinstance(expr.node, TypeInfo):
+                # Reference to a class or a nested class
+                output.update(split_module_names(expr.node.module_name))
+            elif expr.fullname is not None and '.' in expr.fullname and not is_suppressed_import:
+                # Everything else (that is not a silenced import within a class)
+                output.add(expr.fullname.rsplit('.', 1)[0])
+            break
+        elif isinstance(expr, MemberExpr):
+            if isinstance(expr.expr, RefExpr):
+                expr = expr.expr
+            else:
+                break
+        else:
+            raise AssertionError("Unknown RefExpr subclass: {}".format(type(expr)))
+    return output`,
         };
     },
 
     methods: {
         typing(e) {
             this.enableTabber(e);
-            console.log(this.editorText);
             this.editorText = e.target.value;
             this.cursorPosition = e.target.selectionStart;
-
+            this.parsePythonToGraph();
             e.returnValue = true;
         },
 
@@ -63,13 +91,9 @@ export default {
                 e.which === 9 ||
                 e.key === "Tab"
             ) {
-                console.log("in tabber");
-                console.log(e.returnValue);
-
                 e.preventDefault();
                 const tab = "    ";
                 this.editorText = this.editorText.concat(tab);
-                // this.cursorPosition = this.cursorPosition + 4;
                 this.cursorPosition = e.target.selectionStart;
             }
         },
@@ -79,7 +103,16 @@ export default {
         },
 
         parsePythonToGraph() {
-            console.log("IMPLEMENT ME");
+            /* parses the code found in editor into list of objects for further processing */
+
+            const source = this.editorText;
+
+            // ?? if less than 20 characters of code don't bother parsing??
+            if (typeof source === String) {
+                // otherwise get abstract syntax tree
+                var parse_results = filbert.parse(source);
+                console.log(parse_results);
+            }
         },
 
         highlightRainbowTabs() {
@@ -127,13 +160,11 @@ export default {
                     hljs.highlightBlock(target);
                 });
             },
-            componentUpdated: function (el, binding, editorText) {
+            componentUpdated: function (el, binding) {
                 // after an update, re-fill the content and then highlight
                 let targets = el.querySelectorAll("code");
                 targets.forEach((target) => {
                     if (binding.value) {
-                        console.log("==========Logging editorText==========");
-                        console.log(editorText);
                         target.textContent = binding.value;
                         hljs.highlightBlock(target);
                     }
