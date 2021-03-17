@@ -28,28 +28,3 @@
   ]  
 }
 
-// comments: {
-//                     // *TODO ! REMOVE COMMENTS FIRST
-//                     flags: 'gm',
-//                     regex: "(#.*)",
-//                     description: "matches all comments",
-//                 },
-//                 assignment: {
-//                     flags: 'gm',
-//                     regex: "(.*=.*)",
-//                     description: "matches = (can include return, def, etc)",
-//                 },
-//                 _return: {
-//                     flags: 'gm',
-//                     regex: '.*(return.*)',
-//                     description: '',
-//                 },
-//                 def: {
-//                     flags: 'gm',
-//                     regex: '.*def.*',
-//                     description: '',
-//                 },
-//                 klass: {
-//                     flags: 'gm',
-//                     regex: '.*class.*',
-//                     description: '',
