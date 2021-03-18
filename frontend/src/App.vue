@@ -19,7 +19,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style>
 ::-moz-focus-inner {
     border: 0;
 }
@@ -37,12 +37,10 @@ export default {
     max-height: 100vh;
 }
 
-.h-full-editor {
-    max-height: calc(100vh - 3.5rem);
-}
-
-// remove dotted outline/border in Firefox
-// TODO: improve UX and implement custom focus styles
+/* 
+   remove dotted outline/border in Firefox
+   TODO: improve UX and implement custom focus styles 
+*/
 textarea:focus,
 textarea:active,
 button:focus,
@@ -56,19 +54,15 @@ select::-moz-focus-inner,
 input[type="file"] > input[type="button"]::-moz-focus-inner {
     outline: none !important;
 }
-.w-128 {
-    width: 70rem;
-}
-.h-128 {
-    height: 69rem;
-}
 select:-moz-focusring {
     color: transparent;
     text-shadow: 0 0 0 #000;
 }
 
-// TODO: Clean this mess up and use tailwind correctly
-// colors
+/* 
+    TODO: Clean this mess up and use tailwind correctl
+    COLORS
+ */
 :root {
     --fg-dark: #0f1e29;
     --bg-dark: #000c18;
