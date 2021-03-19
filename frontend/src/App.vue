@@ -60,7 +60,7 @@ select:-moz-focusring {
 }
 
 /* 
-    TODO: Clean this mess up and use tailwind correctl
+    TODO: Clean this mess up and use tailwind correctly
     COLORS
  */
 :root {

@@ -4,7 +4,7 @@
         <!-- Editor contained in grid to overlap source textarea -->
         <div class="w-full h-full grid items-start justify-items-start bg-navy">
             <textarea
-                class="row-start-1 col-start-1 fc w-128 p-2 whitespace-pre-wrap overflow-x-hidden overflow-y-hidden bg-transparent text-transparent"
+                class="row-start-1 col-start-1 resize-none fc w-128 p-2 whitespace-pre-wrap overflow-x-hidden overflow-y-hidden bg-transparent text-transparent"
                 spellcheck="false"
                 ref="inputfieldarea"
                 :value="editorText"

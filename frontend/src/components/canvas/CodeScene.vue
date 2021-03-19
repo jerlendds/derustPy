@@ -60,6 +60,7 @@ export default {
             height: 0,
             fancyShader: null,
             timestamp: 0,
+            wireframeGrid: null,
         };
     },
 
@@ -73,23 +74,34 @@ export default {
             this.width = this.$refs.canvas.clientWidth;
             this.height = this.$refs.canvas.clientHeight;
             this.aspect = this.width / this.height;
-            console.log(this.$refs.canvas, this.width, this.height);
+            // console.log(this.height, this.width);
 
             this.scene = new THREE.Scene();
-            this.camera = new THREE.OrthographicCamera(
-                (this.zoom * this.aspect) / -2,
-                (this.zoom * this.aspect) / 2,
-                this.zoom / 2,
-                this.zoom / -2,
-                1,
-                1024
+
+            // this.camera = new THREE.OrthographicCamera(
+            //     (this.zoom * this.aspect) / -2,
+            //     (this.zoom * this.aspect) / 2,
+            //     this.zoom / 2,
+            //     this.zoom / -2,
+            //     1,
+            //     1024
+            // );
+            // this.camera.position.set(0, 0, 8);
+            // this.camera.up.set(0, 0, 1);
+            // this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+            const fov = 45;
+            const near = 1;
+            const far = 500;
+            this.camera = new THREE.PerspectiveCamera(
+                fov,
+                this.aspect,
+                near,
+                far
             );
-            this.camera.position.set(0, 0, 8);
-            this.camera.up.set(0, 0, 1);
-            this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+            this.camera.position.set(0, 0, 100);
+            this.camera.lookAt(0, 0, 0);
 
             this.renderer = new THREE.WebGLRenderer({ alpha: true });
-            console.log(this.width, this.height);
             this.renderer.setSize(this.width, this.height);
 
             this.$refs.canvas.appendChild(this.renderer.domElement);
@@ -98,19 +110,20 @@ export default {
         init() {
             this.setupInit();
             this.adjustLighting();
+            this.addWireframeGrid();
             this.addCube();
-            this.addCustomShader();
+            this.addRoundedRect();
+            // this.addCustomShader();
             this.animate();
         },
 
         animate() {
             requestAnimationFrame(this.animate);
 
-            this.timestamp += 0.01;
-
-            this.fancyShader.morphTargetInfluences[0] = Math.abs(
-                Math.sin(this.timestamp)
-            );
+            // this.timestamp += 0.01;
+            // this.fancyShader.morphTargetInfluences[0] = Math.abs(
+            //     Math.sin(this.timestamp)
+            // );
 
             this.cube.rotation.x += 0.01;
             this.cube.rotation.y += 0.02;
@@ -118,13 +131,70 @@ export default {
             this.renderer.render(this.scene, this.camera);
         },
 
+        addRoundedRect() {
+            // Rounded rectangle
+
+            const roundedRectShape = new THREE.Shape();
+            this.roundedRect(roundedRectShape, 0, -10, 10, 5, 1);
+
+            const extrudeSettings = {
+                depth: 0.25,
+                bevelEnabled: true,
+                bevelSegments: 5,
+                steps: 2,
+                bevelSize: 0.2,
+                bevelThickness: 1,
+            };
+
+            this.addShape(
+                roundedRectShape,
+                extrudeSettings,
+                0x2f9bda,
+                -150,
+                150,
+                0,
+                0,
+                0,
+                0,
+                1
+            );
+        },
+        roundedRect(ctx, x, y, width, height, radius) {
+            ctx.moveTo(x, y + radius);
+            ctx.lineTo(x, y + height - radius);
+            ctx.quadraticCurveTo(x, y + height, x + radius, y + height);
+            ctx.lineTo(x + width - radius, y + height);
+            ctx.quadraticCurveTo(
+                x + width,
+                y + height,
+                x + width,
+                y + height - radius
+            );
+            ctx.lineTo(x + width, y + radius);
+            ctx.quadraticCurveTo(x + width, y, x + width - radius, y);
+            ctx.lineTo(x + radius, y);
+            ctx.quadraticCurveTo(x, y, x, y + radius);
+        },
+        addShape(shape, extrudeSettings, color, x, y, z, rx, ry, rz, s) {
+            // extruded shape
+
+            var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+            var mesh = new THREE.Mesh(
+                geometry,
+                new THREE.MeshPhongMaterial({ color: color })
+            );
+            mesh.position.z = -3;
+            mesh.position.y = 20;
+            this.scene.add(mesh);
+        },
         addCube() {
             const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
             this.cube = new THREE.Mesh(geometry, material);
+            this.cube.position.z = 2;
+            this.cube.position.y = 7;
             this.scene.add(this.cube);
-
-            this.camera.position.z = 5;
         },
 
         vertexShader() {
@@ -134,6 +204,22 @@ export default {
         fragmentShader() {
             const shader = this.$refs.fragmentShader.textContent;
             return String(shader);
+        },
+
+        coordinatesDebugAid() {},
+
+        addWireframeGrid() {
+            var height = 5;
+            var width = 20;
+
+            const geometry = new THREE.PlaneGeometry(width, height);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0xae81ff,
+                side: THREE.DoubleSide,
+            });
+            const plane = new THREE.Mesh(geometry, material);
+            plane.position.z = 1;
+            this.scene.add(plane);
         },
 
         addCustomShader() {
@@ -150,7 +236,7 @@ export default {
 
             for (var i = 0; i < morphTarget.count; i++) {
                 v.fromBufferAttribute(morphTarget, i);
-                v.multiplyScalar(2);
+                v.multiplyScalar(0.25);
                 morphTarget.setXYZ(i, v.x, v.y, v.z);
             }
 
@@ -168,15 +254,17 @@ export default {
             material.morphTargets = true;
 
             this.fancyShader = new THREE.Mesh(geometry, material);
+            this.fancyShader.position.z = -400;
             this.scene.add(this.fancyShader);
         },
 
         adjustLighting() {
             let pointLight = new THREE.PointLight(0xdddddd);
-            pointLight.position.set(-5, -3, 3);
+            pointLight.position.set(-5, -3, 7);
             this.scene.add(pointLight);
 
             let ambientLight = new THREE.AmbientLight(0x505050);
+            ambientLight.position.set(0, 0, 10);
             this.scene.add(ambientLight);
         },
     },
