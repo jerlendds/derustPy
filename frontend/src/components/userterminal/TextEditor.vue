@@ -41,37 +41,22 @@ export default {
     data() {
         return {
             cursorPosition: 0,
-            editorText: 'print("hello world")',
-            history: [],
-            x: `def extract_refexpr_names(expr: RefExpr) -> Set[str]:
-    """Recursively extracts all module references from a reference expression.
-    Note that currently, the only two subclasses of RefExpr are NameExpr and
-    MemberExpr."""
-    output = set()  # type: Set[str]
-    while isinstance(expr.node, MypyFile) or expr.fullname is not None:
-        if isinstance(expr.node, MypyFile) and expr.fullname is not None:
-            # If it's None, something's wrong (perhaps due to an
-            # import cycle or a suppressed error).  For now we just
-            # skip it.
-            output.add(expr.fullname)
+            editorText: `
+# hi there
+m = (12, 1)            
+l = 3.14159            
+u = 1
+x = "hello"
+z = [1, 2, 3, 4.0, "5"]            
+y = {"hello": "world"}            
 
-        if isinstance(expr, NameExpr):
-            is_suppressed_import = isinstance(expr.node, Var) and expr.node.is_suppressed_import
-            if isinstance(expr.node, TypeInfo):
-                # Reference to a class or a nested class
-                output.update(split_module_names(expr.node.module_name))
-            elif expr.fullname is not None and '.' in expr.fullname and not is_suppressed_import:
-                # Everything else (that is not a silenced import within a class)
-                output.add(expr.fullname.rsplit('.', 1)[0])
-            break
-        elif isinstance(expr, MemberExpr):
-            if isinstance(expr.expr, RefExpr):
-                expr = expr.expr
-            else:
-                break
-        else:
-            raise AssertionError("Unknown RefExpr subclass: {}".format(type(expr)))
-    return output`,
+g = [{"hello": 1}, {2: [1, 2, 3]}, 123321]
+if x == "hello":
+    x = "hello world"
+    print(x)
+else:
+    print("ast")`,
+            history: [],
         };
     },
 
@@ -80,7 +65,7 @@ export default {
             this.enableTabber(e);
             this.editorText = e.target.value;
             this.cursorPosition = e.target.selectionStart;
-            this.parsePythonToGraph();
+
             e.returnValue = true;
         },
 
@@ -103,16 +88,9 @@ export default {
         },
 
         parsePythonToGraph() {
-            /* parses the code found in editor into list of objects for further processing */
-
-            const source = this.editorText;
-
-            // ?? if less than 20 characters of code don't bother parsing??
-            if (typeof source === String) {
-                // otherwise get abstract syntax tree
-                var parse_results = filbert.parse(source);
-                console.log(parse_results);
-            }
+            var source = this.editorText;
+            var parse_results = filbert.parse(source);
+            console.log(parse_results);
         },
 
         highlightRainbowTabs() {
@@ -134,11 +112,6 @@ export default {
                 setTimeout(y, 6000);
             }
         },
-
-        // clearEditor() {
-        //     this.editorText = "";
-        //     this.focusEditor();
-        // },
     },
 
     directives: {
@@ -151,10 +124,6 @@ export default {
                     // if a value is directly assigned to the directive, use this
                     // instead of the element content.
                     if (binding.value) {
-                        // console.log(
-                        //     "binding.value exists assiging to textContent:" +
-                        //         binding.value
-                        // );
                         target.textContent = binding.value;
                     }
                     hljs.highlightBlock(target);
@@ -173,7 +142,9 @@ export default {
         },
     },
 
-    mounted() {},
+    mounted() {
+        this.parsePythonToGraph();
+    },
 };
 </script>
 
