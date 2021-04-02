@@ -1,6 +1,14 @@
 <template>
-    <header class="fixed blue-purple shadow-sm  w-full flex items-center justify-between h-14 px-3 flex-shrink-0 z-50">
-        <h1 class="text-2xl t-white-0 font-bold">derustPy</h1>
+    <header class="w-11/12 fixed w-full flex items-center justify-between h-10 px-3  z-50">
+
+        <!-- <h1 class="text-2xl font-bold logo-shadow-sm">derustPy</h1> -->
+        <section>
+
+            <font-awesome-icon
+                class="t-white-0"
+                :icon="['fa', 'bars']"
+            />
+        </section>
         <nav class="flex">
             <router-link
                 class=""
@@ -8,15 +16,15 @@
                 :key="index"
                 :to="link.path"
                 :class="link.klass"
-            >{{link.text}}</router-link>
+            >
+                <font-awesome-icon :icon="link.icon" />
+            </router-link>
         </nav>
+
     </header>
 </template>
 
 <style scoped>
-.blue-purple {
-    background: var(--bg-gradient-top);
-}
 </style>
 
 <script>
@@ -26,19 +34,21 @@ export default {
         return {
             links: [
                 {
-                    path: "/signup",
-                    text: "Create Account",
-                    klass:
-                        "py-1.5 px-3 mx-2 my-2 font-semibold shadow-sm t-white-0 bg-green rounded",
+                    path: "/syntax-theme",
+                    icon: ["fas", "palette"],
+                    klass: "py-1.5 px-1 mx-2 my-2 t-white-0 rounded",
                 },
                 {
-                    path: "/login",
-                    text: "Login",
-                    klass:
-                        "py-1.5 px-4 mx-2 my-2 font-medium t-white-0 rounded border-ghost-btn",
+                    path: "/settings",
+                    icon: ["fas", "cog"],
+                    klass: "py-1.5 px-1 mx-2 my-2 t-white-0 rounded",
                 },
             ],
         };
+    },
+
+    methods: {
+        toggleDrawer() {},
     },
 };
 </script>

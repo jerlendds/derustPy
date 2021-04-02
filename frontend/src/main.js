@@ -6,11 +6,11 @@ import store from './store'
 import "tailwindcss/tailwind.css"
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPalette, faListOl, faProjectDiagram, faBug, faCogs, faTrashAlt, faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faPalette, faListOl, faProjectDiagram, faBug, faCogs, faTrashAlt, faQuestion, faBars, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 
-library.add(faPalette, faListOl, faProjectDiagram, faBug, faCogs, faTrashAlt, faQuestion)
+library.add(faPalette, faListOl, faProjectDiagram, faBug, faCogs, faTrashAlt, faQuestion, faBars, faCog)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false

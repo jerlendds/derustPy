@@ -20,6 +20,10 @@ export default {
 </script>
 
 <style>
+.shadow-real {
+    box-shadow: 5px 7px 10px #272727;
+}
+
 ::-moz-focus-inner {
     border: 0;
 }
@@ -78,8 +82,8 @@ select:-moz-focusring {
     --class-fg: #a6e22e;
     --function-fg: #2f9bda;
 
-    --bg-gradient-top: #2b3556;
-    --bg-gradient-bottom: #182038;
+    --bg-gradient-top: #282b2e;
+    --bg-gradient-bottom: #1f2224;
     --bg-header: #1d2746;
     --bg-terminal: #11172d;
     --bg-terminal-0: #11172dbe;

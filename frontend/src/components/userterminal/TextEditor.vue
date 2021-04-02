@@ -1,10 +1,8 @@
 <template>
-    <section class="w-full h-full flex pt-14 bg-navy">
-        <!-- <line-numbers /> -->
-        <!-- Editor contained in grid to overlap source textarea -->
-        <div class="w-full h-full grid items-start justify-items-start bg-navy">
+    <section class="flex w-full h-full pt-10">
+        <div class="w-full grid shadow-real rounded-lg my-6">
             <textarea
-                class="row-start-1 col-start-1 resize-none fc w-128 p-2 whitespace-pre-wrap overflow-x-hidden overflow-y-hidden bg-transparent text-transparent"
+                class="py-2 row-start-1 col-start-1 rounded-lg resize-none fc w-128 p-2 whitespace-pre-wrap overflow-x-hidden overflow-y-hidden bg-transparent text-transparent"
                 spellcheck="false"
                 ref="inputfieldarea"
                 :value="editorText"
@@ -13,15 +11,13 @@
             >
             </textarea>
             <pre
-                class="row-start-1 col-start-1 w-full h-full overflow-y-hidden"
+                class="py-2 row-start-1 col-start-1 w-full h-full overflow-y-hidden rounded-lg "
                 v-hljs="editorText"
                 ref="hlsourcecode"
                 @click="focusEditor()"
             ><code class="python fc w-full h-full"></code></pre>
 
         </div>
-
-        <widgets />
     </section>
 </template>
 
@@ -30,13 +26,13 @@ import filbert from "filbert";
 import hljs from "@/assets/js/highlight.pack.js";
 // TODO: Pass current number of lines occupied into linenumbers and bind scroll position of editor
 // import LineNumbers from "@/components/userterminal/LineNumbers.vue";
-import EditorWidgets from "@/components/userterminal/EditorWidgets.vue";
+// import EditorWidgets from "@/components/userterminal/EditorWidgets.vue";
 
 export default {
     name: "TextEditor",
     components: {
         // lineNumbers: LineNumbers,
-        widgets: EditorWidgets,
+        // widgets: EditorWidgets,
     },
     data() {
         return {
@@ -150,86 +146,88 @@ else:
 
 <style>
 .hljs {
+    border-radius: 0.375rem;
     overflow-wrap: break-word;
     white-space: pre-wrap;
     display: block;
     overflow-x: auto;
     overflow-y: auto;
     padding: 0.5rem;
-    background: var(--bg-navy);
-    color: var(--white-0);
+    background: #282b2e;
 }
-
-.hljs-comment,
-.hljs-quote {
-    color: #586e75;
-}
-
-/* Solarized Green */
 .hljs-keyword,
 .hljs-selector-tag,
-.hljs-addition {
-    color: var(--keyword-fg);
+.hljs-literal,
+.hljs-selector-id {
+    color: #93c763;
 }
 
-/* Solarized Cyan */
 .hljs-number {
-    color: var(--number-fg);
+    color: #ffcd22;
+}
+
+.hljs {
+    color: #e0e2e4;
+}
+
+.hljs-attribute {
+    color: #668bb0;
+}
+
+.hljs-code,
+.hljs-class .hljs-title,
+.hljs-section {
+    color: white;
+}
+
+.hljs-regexp,
+.hljs-link {
+    color: #d39745;
+}
+
+.hljs-meta {
+    color: #557182;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-bullet,
+.hljs-subst,
+.hljs-emphasis,
+.hljs-type,
+.hljs-built_in,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-addition,
+.hljs-variable,
+.hljs-template-tag,
+.hljs-template-variable {
+    color: #8cbbad;
 }
 
 .hljs-string,
-.hljs-meta .hljs-meta-string,
+.hljs-symbol {
+    color: #ec7600;
+}
+
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion {
+    color: #818e96;
+}
+
+.hljs-selector-class {
+    color: #a082bd;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
 .hljs-literal,
 .hljs-doctag,
-.hljs-regexp {
-    color: var(--string-fg);
-}
-
-/* Solarized Blue */
 .hljs-title,
 .hljs-section,
+.hljs-type,
 .hljs-name,
-.hljs-selector-id,
-.hljs-selector-class {
-    color: #268bd2;
-}
-
-/* Solarized Yellow */
-.hljs-attribute,
-.hljs-attr,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-class .hljs-title,
-.hljs-type {
-    color: var(--class-fg);
-}
-
-/* Solarized Orange */
-.hljs-symbol,
-.hljs-bullet,
-.hljs-subst,
-.hljs-meta,
-.hljs-meta .hljs-keyword,
-.hljs-selector-attr,
-.hljs-selector-pseudo,
-.hljs-link {
-    color: #cb4b16;
-}
-
-/* Solarized Red */
-.hljs-built_in,
-.hljs-deletion {
-    color: #dc322f;
-}
-
-.hljs-formula {
-    background: #073642;
-}
-
-.hljs-emphasis {
-    font-style: italic;
-}
-
 .hljs-strong {
     font-weight: bold;
 }
